@@ -60,11 +60,14 @@ if choice == "Trip Scheduling & Booking":
             "price": price,
         }
 
-        response = supabase.table("bookings").insert(booking_data).execute()
-        if response.status_code == 201:
-            st.success("🎟️ Booking Confirmed! Check Dashboard for details.")
-        else:
-            st.error("⚠️ There was an error with your booking.")
+        try:
+            response = supabase.table("bookings").insert(booking_data).execute()
+            if hasattr(response, "data") and response.data:
+                st.success("🎟️ Booking Confirmed! Check Dashboard for details.")
+            else:
+                st.error("⚠️ There was an error with your booking.")
+        except Exception as e:
+            st.error(f"⚠️ Booking error: {str(e)}")
 
 elif choice == "Pricing & Packages":
     # Display travel packages and prices
