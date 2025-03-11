@@ -106,7 +106,7 @@ if not is_logged_in():
                 st.error("Please enter both email and password.")
 
     elif menu == "Sign Up":
-        email = st.text_input("Email", type="email")
+        email = st.text_input("Email")
         password = st.text_input("Password", type="password")
         if st.button("Sign Up"):
             if email and password:
