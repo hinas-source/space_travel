@@ -195,8 +195,8 @@ elif choice == "User Dashboard":
         refund_amount = (booking['price'] * refund_percentage) / 100
         
         # Another option - separate the string formatting from the f-string
-        price_formatted = "${:,}".format(booking['price'])
-        st.write(f"**Estimated Refund:** ${refund_amount:,.2f} ({refund_percentage}% of {price_formatted})")
+        price_formatted = "\${:,}".format(booking['price'])
+        st.write(f"**Estimated Refund:** \${refund_amount:,.2f} ({refund_percentage}\% of {price_formatted})")
         
         # Confirm or cancel buttons
         col1, col2 = st.columns(2)
