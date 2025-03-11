@@ -6,10 +6,10 @@ import os
 from supabase import create_client, Client
 
 # Supabase Configuration
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-st.write("SUPABASE_URL:", os.getenv("SUPABASE_URL"))  # Debugging
-st.write("SUPABASE_KEY:", os.getenv("SUPABASE_KEY"))  # Debugging
+SUPABASE_URL =  "https://sbdedhvzitxgvxsnkxqc.supabase.co" #os.getenv("SUPABASE_URL")
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiZGVkaHZ6aXR4Z3Z4c25reHFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2NTg0NTEsImV4cCI6MjA1NzIzNDQ1MX0.NiASD4LrhnZEcywurrNxhc4zD5GoKLbLNEUWiimIgpY" #os.getenv("SUPABASE_KEY")
+#st.write("SUPABASE_URL:", os.getenv("SUPABASE_URL"))  # Debugging
+#st.write("SUPABASE_KEY:", os.getenv("SUPABASE_KEY"))  # Debugging
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Space destinations & pricing
