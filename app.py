@@ -118,6 +118,7 @@ if not is_logged_in():
 
     elif menu == "Sign Up":
         email = st.text_input("Email")
+        st.write(email)
         password = st.text_input("Password", type="password")
         if st.button("Sign Up"):
             if email and password:
