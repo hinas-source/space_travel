@@ -59,7 +59,7 @@ st.write(f"💰 **Price:** ${price:,}")
 
 if st.button("Book Now"):
     booking_data = {
-        "user": current_user,
+        "user_email": current_user,
         "destination": destination,
         "date": str(departure_date),
         "class": seat_class,
