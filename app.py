@@ -14,9 +14,9 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Space destinations & pricing
 DESTINATIONS = {
-    "International Space Station": {"economy": 500000, "luxury": 1200000, "VIP": 2500000},
-    "Lunar Hotel": {"economy": 1500000, "luxury": 3000000, "VIP": 5000000},
-    "Mars Colony": {"economy": 5000000, "luxury": 10000000, "VIP": 20000000},
+    "International Space Station": {"Economy": 500000, "Luxury": 1200000, "VIP": 2500000},
+    "Lunar Hotel": {"Economy": 1500000, "Luxury": 3000000, "VIP": 5000000},
+    "Mars Colony": {"Economy": 5000000, "Luxury": 10000000, "VIP": 20000000},
 }
 
 # Accommodation suggestions based on destination
