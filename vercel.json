@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "streamlit_app.py",  // Replace with your actual file name
+      "src": "https://dubai-to-the-stars.streamlit.app/", 
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/streamlit_app.py"  // Replace with your actual file name
+      "dest": "/https://dubai-to-the-stars.streamlit.app/" 
     }
   ]
 }
