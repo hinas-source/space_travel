@@ -5,20 +5,36 @@ import random
 import os
 
 # Initialize Supabase client
-SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
-
-if not SUPABASE_URL or not SUPABASE_KEY:
-    st.error("Supabase credentials are missing. Please set environment variables.")
-    st.stop()
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Accommodation suggestions based on destination
-ACCOMMODATIONS = {
-    "International Space Station": ["Orbital Suites", "Cosmo Cabins"],
-    "Lunar Hotel": ["Moonlight Resort", "Lunar Lux Villas"],
-    "Mars Colony": ["Red Planet Lodges", "Martian Domes"]
-}
+# Function to handle user login
+def login_user(email: str, password: str):
+    response = supabase.auth.sign_in(email=email, password=password)
+    if response.error:
+        st.error(f"Login failed: {response.error.message}")
+    else:
+        st.session_state.user = response.user
+        st.success("Logged in successfully")
+
+# Function to handle user sign-up
+def signup_user(email: str, password: str):
+    response = supabase.auth.sign_up(email=email, password=password)
+    if response.error:
+        st.error(f"Sign up failed: {response.error.message}")
+    else:
+        st.success("Sign-up successful! Please check your email to confirm.")
+
+# Function to log out user
+def logout_user():
+    supabase.auth.sign_out()
+    del st.session_state.user
+    st.success("Logged out successfully")
+
+# Check if user is logged in
+def is_logged_in():
+    return "user" in st.session_state
 
 # Space destinations & pricing
 DESTINATIONS = {
@@ -27,85 +43,83 @@ DESTINATIONS = {
     "Mars Colony": {"economy": 5000000, "luxury": 10000000, "VIP": 20000000},
 }
 
-# Launch Countdown
-def launch_countdown(departure_date):
-    now = datetime.datetime.now().date()
-    launch_time = datetime.datetime.strptime(str(departure_date), "%Y-%m-%d").date()
-    return (launch_time - now).days
-
-# Main page layout
-st.title("🚀 Dubai to the Stars – Book Your Space Travel")
-
-menu = ["Trip Scheduling & Booking", "Pricing & Packages", "Accommodation Recommendations", "User Dashboard"]
-choice = st.sidebar.selectbox("Select Menu", menu)
-
-if choice == "Trip Scheduling & Booking":
-    # Display the booking form
+# Booking Form
+def booking_form():
     st.subheader("🌌 Book Your Space Journey")
     destination = st.selectbox("Choose Destination", list(DESTINATIONS.keys()))
     departure_date = st.date_input("Select Departure Date", min_value=datetime.date.today())
     seat_class = st.radio("Select Class", ["economy", "luxury", "VIP"])
 
+    # Display price based on seat class
     price = DESTINATIONS[destination][seat_class]
     st.write(f"💰 **Price:** ${price:,}")
 
     if st.button("Book Now"):
-        # Insert booking details into Supabase
-        current_user = "user@example.com"  # Mocked user data for demo
+        # Capture booking details
+        current_user = st.session_state.user.email
         booking_data = {
-            "user": current_user,
+            "user_email": current_user,
             "destination": destination,
             "date": str(departure_date),
             "class": seat_class,
             "price": price,
         }
-
+        
+        # Insert data into Supabase
         response = supabase.table("bookings").insert(booking_data).execute()
         if response.status_code == 201:
             st.success("🎟️ Booking Confirmed! Check Dashboard for details.")
         else:
             st.error("⚠️ There was an error with your booking.")
 
-elif choice == "Pricing & Packages":
-    # Display travel packages and prices
-    st.subheader("💼 Pricing & Packages")
-    for destination, prices in DESTINATIONS.items():
-        st.write(f"### {destination}")
-        for seat_class, price in prices.items():
-            st.write(f"**{seat_class.capitalize()} Class:** ${price:,}")
+# User Dashboard
+def user_dashboard():
+    st.sidebar.header(f"Welcome, {st.session_state.user.email}")
+    st.sidebar.button("Logout", on_click=logout_user)
 
-elif choice == "Accommodation Recommendations":
-    # Display accommodation recommendations
-    st.subheader("🏨 Recommended Accommodations")
-    destination = st.selectbox("Choose your Destination for Accommodation Suggestions", list(ACCOMMODATIONS.keys()))
-    recommended_accommodation = random.choice(ACCOMMODATIONS[destination])
-    st.write(f"**Recommended Accommodation:** {recommended_accommodation}")
+    # Fetch user bookings from Supabase
+    user_bookings = supabase.table("bookings").select("*").eq("user_email", st.session_state.user.email).execute()
 
-elif choice == "User Dashboard":
-    # Display user dashboard with bookings and countdown
-    st.subheader("User Dashboard")
-    current_user = "user@example.com"  # Mocked for demo purposes
-    st.write(f"**Logged in as:** {current_user}")
-
-    # Fetch and display bookings
-    user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
-
-    # Check if user_bookings.data is None or empty
-    if user_bookings.data is None:
-        st.write("No bookings found. There was an issue with the query.")
+    if user_bookings.data:
+        for booking in user_bookings.data:
+            st.sidebar.write(f"**Destination:** {booking['destination']}")
+            st.sidebar.write(f"**Class:** {booking['class']}")
+            st.sidebar.write(f"**Price:** ${booking['price']:,}")
+            st.sidebar.write(f"**Departure Date:** {booking['date']}")
     else:
-        # If data is found, display the number of bookings
-        st.write(f"Fetched {len(user_bookings.data)} bookings.")
-        if len(user_bookings.data) == 0:
-            st.write("No bookings found for this user.")
-        else:
-            # Display bookings information
-            for booking in user_bookings.data:
-                st.write(f"**Destination:** {booking['destination']}")
-                st.write(f"**Class:** {booking['class']}")
-                st.write(f"**Price:** ${booking['price']:,}")
-                st.write(f"**Departure Date:** {booking['date']}")
-        
-    # AI Travel Tips Section
-    st.subheader("AI Travel Tips")
-    st.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
+        st.sidebar.write("You have no active bookings.")
+
+# Main page layout
+st.title("🚀 Dubai to the Stars – Book Your Space Travel")
+
+# Login/Sign-Up UI
+if not is_logged_in():
+    menu = st.radio("Choose an action", ["Login", "Sign Up"])
+
+    if menu == "Login":
+        email = st.text_input("Email", type="email")
+        password = st.text_input("Password", type="password")
+        if st.button("Login"):
+            if email and password:
+                login_user(email, password)
+            else:
+                st.error("Please enter both email and password.")
+
+    elif menu == "Sign Up":
+        email = st.text_input("Email", type="email")
+        password = st.text_input("Password", type="password")
+        if st.button("Sign Up"):
+            if email and password:
+                signup_user(email, password)
+            else:
+                st.error("Please enter both email and password.")
+else:
+    # Once logged in, show either the booking form or the user dashboard
+    menu = st.sidebar.selectbox("Select Menu", ["Trip Scheduling & Booking", "User Dashboard"])
+    
+    if menu == "Trip Scheduling & Booking":
+        booking_form()
+
+    elif menu == "User Dashboard":
+        user_dashboard()
+
