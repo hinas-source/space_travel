@@ -88,7 +88,7 @@ elif choice == "User Dashboard":
     st.sidebar.write(f"**Logged in as:** {current_user}")
 
     # Fetch and display bookings
-    user_bookings = supabase.table("bookings").select("*").eq("user", current_user).execute()
+    user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
     if user_bookings.data:
         for booking in user_bookings.data:
