@@ -99,9 +99,3 @@ elif choice == "User Dashboard":
     # AI Travel Tips Section
     st.sidebar.subheader("AI Travel Tips")
     st.sidebar.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
-
-
-# Dashboard with Countdown
-st.sidebar.subheader("🚀 Upcoming Launch")
-countdown_days = launch_countdown(departure_date)
-st.sidebar.write(f"**{countdown_days} days until launch!**")
