@@ -7,12 +7,18 @@ import re
 
 # Function to handle user sign-up with basic email validation
 def signup_user(email: str, password: str):
+
+    email = email.strip()
+    
     # Basic regex for email validation
     email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     
     if not re.match(email_regex, email):
         st.error("Invalid email format. Please enter a valid email address.")
         return
+
+    # Debug information (you can remove this later)
+    st.info(f"Attempting to sign up with email: '{email}' (length: {len(email)})")
 
     try:
         # Use named parameters format instead of dictionary
@@ -27,6 +33,12 @@ def signup_user(email: str, password: str):
             st.success("Sign-up successful! Please check your email to confirm.")
     except Exception as e:
         st.error(f"Sign up failed: {str(e)}")
+        
+        # Additional debugging for specific error types
+        error_text = str(e)
+        if "is invalid" in error_text:
+            st.warning("Try using a different email address - Supabase may have specific requirements.")
+            st.info("For testing, try creating a real email or using services like 'temp-mail.org'")
 
 
 # Initialize Supabase client
