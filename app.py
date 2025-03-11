@@ -5,8 +5,8 @@ import random
 import os
 
 # Initialize Supabase client
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = secrets.SUPABASE_URL
+SUPABASE_KEY = secrets.SUPABASE_KEY
 if not SUPABASE_URL or not SUPABASE_KEY:
     st.error("Supabase credentials are missing. Please set environment variables.")
     st.stop()
