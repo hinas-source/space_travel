@@ -12,6 +12,13 @@ if not SUPABASE_URL or not SUPABASE_KEY:
     st.stop()
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Accommodation suggestions based on destination
+ACCOMMODATIONS = {
+    "International Space Station": ["Orbital Suites", "Cosmo Cabins"],
+    "Lunar Hotel": ["Moonlight Resort", "Lunar Lux Villas"],
+    "Mars Colony": ["Red Planet Lodges", "Martian Domes"]
+}
+
 # Space destinations & pricing
 DESTINATIONS = {
     "International Space Station": {"economy": 500000, "luxury": 1200000, "VIP": 2500000},
