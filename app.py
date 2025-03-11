@@ -53,7 +53,7 @@ if choice == "Trip Scheduling & Booking":
         # Insert booking details into Supabase
         current_user = "user@example.com"  # Mocked user data for demo
         booking_data = {
-            "user": current_user,
+            "user_email": current_user,
             "destination": destination,
             "date": str(departure_date),
             "class": seat_class,
@@ -88,7 +88,7 @@ elif choice == "User Dashboard":
     st.write(f"**Logged in as:** {current_user}")
 
     # Fetch and display bookings
-    user_bookings = supabase.table("bookings").select("*").eq("user", current_user).execute()
+    user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
     if user_bookings.data:
         for booking in user_bookings.data:
