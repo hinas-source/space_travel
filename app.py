@@ -54,7 +54,13 @@ st.write(f"💰 **Price:** ${price:,}")
 
 if st.button("Book Now"):
     booking_data = {"user": current_user, "destination": destination, "date": str(departure_date), "class": seat_class, "price": price}
-    supabase.table("bookings").insert(booking_data).execute()
+    #supabase.table("bookings").insert(booking_data).execute()
+    try:
+        response = supabase.table("bookings").insert(booking_data).execute()
+        print("Response:", response)
+    except Exception as e:
+        print("Error:", e)
+
     st.success("🎟️ Booking Confirmed! Check Dashboard for details.")
 
 # Accommodation Suggestions
