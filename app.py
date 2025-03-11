@@ -89,7 +89,7 @@ elif choice == "User Dashboard":
 
     # Fetch and display bookings
     #user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
-    user_bookings = supabase.table("bookings").select("*")
+    user_bookings = supabase.table("bookings").select("*").execute()
     st.write(user_bookings)
 
     if user_bookings.data:
