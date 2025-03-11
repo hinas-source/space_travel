@@ -90,6 +90,12 @@ elif choice == "User Dashboard":
     current_user = "user@example.com"  # Mocked for demo purposes
     st.write(f"**Logged in as:** {current_user}")
 
+    # Initialize session state for booking cancellation if it doesn't exist
+    if 'show_cancel_confirmation' not in st.session_state:
+        st.session_state.show_cancel_confirmation = False
+    if 'booking_to_cancel' not in st.session_state:
+        st.session_state.booking_to_cancel = None
+        
     # Fetch and display bookings
     user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
@@ -147,9 +153,98 @@ elif choice == "User Dashboard":
                             st.info("Edit functionality would go here")
                     
                     with button_col2:
+                        # Trigger cancel confirmation on button click
                         if st.button(f"❌ Cancel", key=f"cancel_{i}"):
-                            st.session_state.cancel_booking_id = booking.get('id')
-                            st.error("Cancel functionality would go here")
+                            st.session_state.show_cancel_confirmation = True
+                            st.session_state.booking_to_cancel = booking
+                            st.experimental_rerun()
+    else:
+        st.info("📭 You have no active bookings.")
+        if st.button("🔍 Browse Available Trips"):
+            st.session_state.menu_choice = "Trip Scheduling & Booking"
+            st.experimental_rerun()
+    
+    # Cancel confirmation dialog
+    if st.session_state.show_cancel_confirmation and st.session_state.booking_to_cancel:
+        booking = st.session_state.booking_to_cancel
+        
+        # Display confirmation dialog
+        st.markdown("---")
+        st.warning("⚠️ **Cancel Booking Confirmation**")
+        st.write(f"Are you sure you want to cancel your trip to **{booking['destination']}** on **{booking['date']}**?")
+        
+        # Cancellation policy information
+        st.info("""
+        **Cancellation Policy:**
+        - Cancellations more than 30 days before departure: 85% refund
+        - Cancellations 15-30 days before departure: 50% refund
+        - Cancellations less than 15 days before departure: 25% refund
+        - Cancellations on the day of departure: No refund
+        """)
+        
+        # Calculate refund amount based on days until launch
+        launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
+        days_until_launch = (launch_date - datetime.datetime.now()).days
+        
+        if days_until_launch > 30:
+            refund_percentage = 85
+        elif days_until_launch >= 15:
+            refund_percentage = 50
+        elif days_until_launch > 0:
+            refund_percentage = 25
+        else:
+            refund_percentage = 0
+            
+        refund_amount = (booking['price'] * refund_percentage) / 100
+        
+        st.write(f"**Estimated Refund:** ${refund_amount:,.2f} ({refund_percentage}% of ${booking['price']:,})")
+        
+        # Confirm or cancel buttons
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🔙 Go Back"):
+                st.session_state.show_cancel_confirmation = False
+                st.session_state.booking_to_cancel = None
+                st.experimental_rerun()
+                
+        with col2:
+            if st.button("✅ Confirm Cancellation"):
+                try:
+                    # Delete booking from Supabase
+                    booking_id = booking.get('id')
+                    response = supabase.table("bookings").delete().eq("id", booking_id).execute()
+                    
+                    if hasattr(response, "data") and response.data:
+                        # Reset the confirmation dialog
+                        st.session_state.show_cancel_confirmation = False
+                        st.session_state.booking_to_cancel = None
+                        
+                        # Add to cancellation history table (optional)
+                        cancellation_data = {
+                            "user_email": current_user,
+                            "destination": booking['destination'],
+                            "original_date": booking['date'],
+                            "class": booking['class'],
+                            "original_price": booking['price'],
+                            "refund_amount": refund_amount,
+                            "cancellation_date": str(datetime.datetime.now().date())
+                        }
+                        
+                        # Insert into cancellations table (if you have one)
+                        try:
+                            supabase.table("cancellations").insert(cancellation_data).execute()
+                        except Exception:
+                            # If cancellations table doesn't exist, just continue
+                            pass
+                            
+                        st.success("✅ Your booking has been successfully cancelled. Any applicable refund will be processed within 5-7 business days.")
+                        time.sleep(2)  # Give user time to read the message
+                        st.experimental_rerun()
+                    else:
+                        st.error("⚠️ There was an error cancelling your booking. Please try again or contact customer support.")
+                
+                except Exception as e:
+                    st.error(f"⚠️ Error: {str(e)}")
     else:
         st.info("📭 You have no active bookings.")
         if st.button("🔍 Browse Available Trips"):
