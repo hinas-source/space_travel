@@ -3,6 +3,24 @@ import datetime
 from supabase import create_client, Client
 import random
 
+import re
+
+# Function to handle user sign-up with basic email validation
+def signup_user(email: str, password: str):
+    # Basic regex for email validation
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    
+    if not re.match(email_regex, email):
+        st.error("Invalid email format. Please enter a valid email address.")
+        return
+
+    response = supabase.auth.sign_up({"email": email, "password": password})
+    if response.error:
+        st.error(f"Sign up failed: {response.error.message}")
+    else:
+        st.success("Sign-up successful! Please check your email to confirm.")
+
+
 # Initialize Supabase client
 SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
@@ -16,14 +34,6 @@ def login_user(email: str, password: str):
     else:
         st.session_state.user = response.user
         st.success("Logged in successfully")
-
-# Function to handle user sign-up
-def signup_user(email: str, password: str):
-    response = supabase.auth.sign_up({"email": email, "password": password})
-    if response.error:
-        st.error(f"Sign up failed: {response.error.message}")
-    else:
-        st.success("Sign-up successful! Please check your email to confirm.")
 
 
 # Function to log out user
