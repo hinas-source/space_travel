@@ -96,7 +96,8 @@ if not is_logged_in():
     menu = st.radio("Choose an action", ["Login", "Sign Up"])
 
     if menu == "Login":
-        email = st.text_input("Email", type="email")
+        email = st.text_input("Email")
+
         password = st.text_input("Password", type="password")
         if st.button("Login"):
             if email and password:
