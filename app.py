@@ -5,8 +5,11 @@ import random
 import os
 
 # Initialize Supabase client
-SUPABASE_URL = "YOUR_SUPABASE_URL"
-SUPABASE_KEY = "YOUR_SUPABASE_KEY"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+if not SUPABASE_URL or not SUPABASE_KEY:
+    st.error("Supabase credentials are missing. Please set environment variables.")
+    st.stop()
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Space destinations & pricing
