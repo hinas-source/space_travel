@@ -19,11 +19,12 @@ def login_user(email: str, password: str):
 
 # Function to handle user sign-up
 def signup_user(email: str, password: str):
-    response = supabase.auth.sign_up(email=email, password=password)
+    response = supabase.auth.sign_up({"email": email, "password": password})
     if response.error:
         st.error(f"Sign up failed: {response.error.message}")
     else:
         st.success("Sign-up successful! Please check your email to confirm.")
+
 
 # Function to log out user
 def logout_user():
