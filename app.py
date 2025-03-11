@@ -19,56 +19,6 @@ DESTINATIONS = {
     "Mars Colony": {"economy": 5000000, "luxury": 10000000, "VIP": 20000000},
 }
 
-# Booking Form
-st.subheader("🌌 Book Your Space Journey")
-destination = st.selectbox("Choose Destination", list(DESTINATIONS.keys()))
-departure_date = st.date_input("Select Departure Date", min_value=datetime.date.today())
-seat_class = st.radio("Select Class", ["economy", "luxury", "VIP"])
-
-# Display price based on seat class
-price = DESTINATIONS[destination][seat_class]
-st.write(f"💰 **Price:** ${price:,}")
-
-if st.button("Book Now"):
-    # Capture booking details
-    current_user = "user@example.com"  # Mocked user data for demo
-    booking_data = {
-        "user": current_user,
-        "destination": destination,
-        "date": str(departure_date),
-        "class": seat_class,
-        "price": price,
-    }
-    
-    # Insert data into Supabase
-    response = supabase.table("bookings").insert(booking_data).execute()
-    if response.status_code == 201:
-        st.success("🎟️ Booking Confirmed! Check Dashboard for details.")
-    else:
-        st.error("⚠️ There was an error with your booking.")
-
-
-# Space destinations & pricing
-DESTINATIONS = {
-    "International Space Station": {"economy": 500000, "luxury": 1200000, "VIP": 2500000},
-    "Lunar Hotel": {"economy": 1500000, "luxury": 3000000, "VIP": 5000000},
-    "Mars Colony": {"economy": 5000000, "luxury": 10000000, "VIP": 20000000},
-}
-
-# Get current user (Mocked for demo purposes)
-def get_current_user():
-    return "user@example.com"
-
-# Pricing & Packages Section
-st.subheader("💼 Pricing & Packages")
-
-# Loop through destinations and display available packages
-for destination, prices in DESTINATIONS.items():
-    st.write(f"### {destination}")
-    for seat_class, price in prices.items():
-        st.write(f"**{seat_class.capitalize()} Class:** ${price:,}")
-
-
 # Accommodation suggestions based on destination
 ACCOMMODATIONS = {
     "International Space Station": ["Orbital Suites", "Cosmo Cabins"],
@@ -76,46 +26,11 @@ ACCOMMODATIONS = {
     "Mars Colony": ["Red Planet Lodges", "Martian Domes"]
 }
 
-# Recommend accommodations
-st.subheader("🏨 Recommended Accommodations")
-destination = st.selectbox("Choose your Destination for Accommodation Suggestions", list(ACCOMMODATIONS.keys()))
-recommended_accommodation = random.choice(ACCOMMODATIONS[destination])
-st.write(f"**Recommended Accommodation:** {recommended_accommodation}")
-
-
 # Launch Countdown
 def launch_countdown(departure_date):
     now = datetime.datetime.now().date()
     launch_time = datetime.datetime.strptime(str(departure_date), "%Y-%m-%d").date()
     return (launch_time - now).days
-
-# User Dashboard
-st.sidebar.header("User Dashboard")
-current_user = "user@example.com"  # Mocked for demo purposes
-st.sidebar.write(f"**Logged in as:** {current_user}")
-
-# Booking management section
-st.sidebar.subheader("Manage Your Bookings")
-# Example to fetch the user's bookings (You can replace this with actual queries from Supabase)
-user_bookings = supabase.table("bookings").select("*").eq("user", current_user).execute()
-
-if user_bookings.data:
-    for booking in user_bookings.data:
-        st.sidebar.write(f"**Destination:** {booking['destination']}")
-        st.sidebar.write(f"**Class:** {booking['class']}")
-        st.sidebar.write(f"**Price:** ${booking['price']:,}")
-        st.sidebar.write(f"**Departure Date:** {booking['date']}")
-        # Countdown timer to launch
-        launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
-        days_until_launch = (launch_date - datetime.datetime.now()).days
-        st.sidebar.write(f"**Launch Countdown:** {days_until_launch} days left")
-
-else:
-    st.sidebar.write("You have no active bookings.")
-    
-# AI-based Travel Tips Section (Just a mockup for now)
-st.sidebar.subheader("AI Travel Tips")
-st.sidebar.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
 
 
 # Main page layout
@@ -170,28 +85,28 @@ elif choice == "User Dashboard":
     # Display user dashboard with bookings and countdown
     st.sidebar.header("User Dashboard")
     current_user = "user@example.com"  # Mocked for demo purposes
-    st.sidebar.write(f"**Logged in as:** {current_user}")
+    st.write(f"**Logged in as:** {current_user}")
 
     # Fetch and display bookings
     user_bookings = supabase.table("bookings").select("*").eq("user", current_user).execute()
 
     if user_bookings.data:
         for booking in user_bookings.data:
-            st.sidebar.write(f"**Destination:** {booking['destination']}")
-            st.sidebar.write(f"**Class:** {booking['class']}")
-            st.sidebar.write(f"**Price:** ${booking['price']:,}")
-            st.sidebar.write(f"**Departure Date:** {booking['date']}")
+            st.write(f"**Destination:** {booking['destination']}")
+            st.write(f"**Class:** {booking['class']}")
+            st.write(f"**Price:** ${booking['price']:,}")
+            st.write(f"**Departure Date:** {booking['date']}")
             # Countdown timer to launch
             launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
             days_until_launch = (launch_date - datetime.datetime.now()).days
-            st.sidebar.write(f"**Launch Countdown:** {days_until_launch} days left")
+            st.write(f"**Launch Countdown:** {days_until_launch} days left")
 
     else:
-        st.sidebar.write("You have no active bookings.")
+        st.write("You have no active bookings.")
         
     # AI Travel Tips Section
-    st.sidebar.subheader("AI Travel Tips")
-    st.sidebar.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
+    st.subheader("AI Travel Tips")
+    st.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
 
 
 # Dashboard with Countdown
