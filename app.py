@@ -14,11 +14,19 @@ def signup_user(email: str, password: str):
         st.error("Invalid email format. Please enter a valid email address.")
         return
 
-    response = supabase.auth.sign_up({"email": email, "password": password})
-    if response.error:
-        st.error(f"Sign up failed: {response.error.message}")
-    else:
-        st.success("Sign-up successful! Please check your email to confirm.")
+    try:
+        # Use named parameters format instead of dictionary
+        response = supabase.auth.sign_up(
+            email=email,
+            password=password
+        )
+        
+        if hasattr(response, 'error') and response.error:
+            st.error(f"Sign up failed: {response.error.message}")
+        else:
+            st.success("Sign-up successful! Please check your email to confirm.")
+    except Exception as e:
+        st.error(f"Sign up failed: {str(e)}")
 
 
 # Initialize Supabase client
