@@ -12,6 +12,13 @@ if not SUPABASE_URL or not SUPABASE_KEY:
     st.stop()
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Space destinations & pricing
+DESTINATIONS = {
+    "International Space Station": {"economy": 500000, "luxury": 1200000, "VIP": 2500000},
+    "Lunar Hotel": {"economy": 1500000, "luxury": 3000000, "VIP": 5000000},
+    "Mars Colony": {"economy": 5000000, "luxury": 10000000, "VIP": 20000000},
+}
+
 # Launch Countdown
 def launch_countdown(departure_date):
     now = datetime.datetime.now().date()
