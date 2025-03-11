@@ -16,10 +16,10 @@ def signup_user(email: str, password: str):
 
     try:
         # Use named parameters format instead of dictionary
-        response = supabase.auth.sign_up(
-            email=email,
-            password=password
-        )
+        response = supabase.auth.sign_up({
+            "email": email,
+            "password": password
+        })
         
         if hasattr(response, 'error') and response.error:
             st.error(f"Sign up failed: {response.error.message}")
@@ -126,7 +126,7 @@ if not is_logged_in():
 
     elif menu == "Sign Up":
         email = st.text_input("Email")
-        st.write(email)
+        
         password = st.text_input("Password", type="password")
         if st.button("Sign Up"):
             if email and password:
