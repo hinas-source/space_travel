@@ -17,9 +17,6 @@ def signup_user(email: str, password: str):
         st.error("Invalid email format. Please enter a valid email address.")
         return
 
-    # Debug information (you can remove this later)
-    st.info(f"Attempting to sign up with email: '{email}' (length: {len(email)})")
-
     try:
         # Use named parameters format instead of dictionary
         response = supabase.auth.sign_up({
@@ -37,8 +34,7 @@ def signup_user(email: str, password: str):
         # Additional debugging for specific error types
         error_text = str(e)
         if "is invalid" in error_text:
-            st.warning("Try using a different email address - Supabase may have specific requirements.")
-            st.info("For testing, try creating a real email or using services like 'temp-mail.org'")
+            st.warning("Try using a real email address - Supabase may have specific requirements.")
 
 
 # Initialize Supabase client
