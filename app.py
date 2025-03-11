@@ -90,20 +90,21 @@ elif choice == "User Dashboard":
     # Fetch and display bookings
     user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
-    if user_bookings.status_code == 200:
-        st.write(f"Fetched {len(user_bookings.data)} bookings.")
-        for booking in user_bookings.data:
-            st.write(f"**Destination:** {booking['destination']}")
-            st.write(f"**Class:** {booking['class']}")
-            st.write(f"**Price:** ${booking['price']:,}")
-            st.write(f"**Departure Date:** {booking['date']}")
-            # Countdown timer to launch
-            launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
-            days_until_launch = (launch_date - datetime.datetime.now()).days
-            st.write(f"**Launch Countdown:** {days_until_launch} days left")
-
+    # Check if user_bookings.data is None or empty
+    if user_bookings.data is None:
+        st.write("No bookings found. There was an issue with the query.")
     else:
-        st.write("You have no active bookings.")
+        # If data is found, display the number of bookings
+        st.write(f"Fetched {len(user_bookings.data)} bookings.")
+        if len(user_bookings.data) == 0:
+            st.write("No bookings found for this user.")
+        else:
+            # Display bookings information
+            for booking in user_bookings.data:
+                st.write(f"**Destination:** {booking['destination']}")
+                st.write(f"**Class:** {booking['class']}")
+                st.write(f"**Price:** ${booking['price']:,}")
+                st.write(f"**Departure Date:** {booking['date']}")
         
     # AI Travel Tips Section
     st.subheader("AI Travel Tips")
