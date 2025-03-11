@@ -83,27 +83,29 @@ elif choice == "Accommodation Recommendations":
 
 elif choice == "User Dashboard":
     # Display user dashboard with bookings and countdown
-    st.sidebar.header("User Dashboard")
+    st.subheader("User Dashboard")
     current_user = "user@example.com"  # Mocked for demo purposes
-    st.sidebar.write(f"**Logged in as:** {current_user}")
+    st.write(f"**Logged in as:** {current_user}")
 
     # Fetch and display bookings
     user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
+    st.write(user_bookings)
+
     if user_bookings.data:
         for booking in user_bookings.data:
-            st.sidebar.write(f"**Destination:** {booking['destination']}")
-            st.sidebar.write(f"**Class:** {booking['class']}")
-            st.sidebar.write(f"**Price:** ${booking['price']:,}")
-            st.sidebar.write(f"**Departure Date:** {booking['date']}")
+            st.write(f"**Destination:** {booking['destination']}")
+            st.write(f"**Class:** {booking['class']}")
+            st.write(f"**Price:** ${booking['price']:,}")
+            st.write(f"**Departure Date:** {booking['date']}")
             # Countdown timer to launch
             launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
             days_until_launch = (launch_date - datetime.datetime.now()).days
-            st.sidebar.write(f"**Launch Countdown:** {days_until_launch} days left")
+            st.write(f"**Launch Countdown:** {days_until_launch} days left")
 
     else:
-        st.sidebar.write("You have no active bookings.")
+        st.write("You have no active bookings.")
         
     # AI Travel Tips Section
-    st.sidebar.subheader("AI Travel Tips")
-    st.sidebar.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
+    st.subheader("AI Travel Tips")
+    st.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
