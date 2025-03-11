@@ -44,7 +44,7 @@ if choice == "Trip Scheduling & Booking":
     st.subheader("🌌 Book Your Space Journey")
     destination = st.selectbox("Choose Destination", list(DESTINATIONS.keys()))
     departure_date = st.date_input("Select Departure Date", min_value=datetime.date.today())
-    seat_class = st.radio("Select Class", ["economy", "luxury", "VIP"])
+    seat_class = st.radio("Select Class", ["Economy", "Luxury", "VIP"])
 
     price = DESTINATIONS[destination][seat_class]
     st.write(f"💰 **Price:** ${price:,}")
