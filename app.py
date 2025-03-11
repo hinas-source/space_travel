@@ -37,7 +37,7 @@ ACCOMMODATIONS = {
 
 # Launch Countdown
 def launch_countdown(departure_date):
-    now = datetime.datetime.now()
+    now = datetime.datetime.now().date()
     launch_time = datetime.datetime.strptime(str(departure_date), "%Y-%m-%d").date()
     return (launch_time - now).days
 
