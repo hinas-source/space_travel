@@ -148,19 +148,19 @@ elif choice == "User Dashboard":
                     # Add action buttons
                     button_col1, button_col2 = st.columns(2)
                     with button_col1:
-                        if st.button(f"✏️ Edit", key=f"edit_{i}"):
+                        if st.button(f"✏️ Edit", key=f"edit_{booking.get('id', i)}"):
                             st.session_state.edit_booking_id = booking.get('id')
                             st.info("Edit functionality would go here")
                     
                     with button_col2:
                         # Trigger cancel confirmation on button click
-                        if st.button(f"❌ Cancel", key=f"cancel_{i}"):
+                        if st.button(f"❌ Cancel", key=f"cancel_{booking.get('id', i)}"):
                             st.session_state.show_cancel_confirmation = True
                             st.session_state.booking_to_cancel = booking
                             st.experimental_rerun()
     else:
         st.info("📭 You have no active bookings.")
-        if st.button("🔍 Browse Available Trips"):
+        if st.button("🔍 Browse Available Trips", key="browse_trips_button"):
             st.session_state.menu_choice = "Trip Scheduling & Booking"
             st.experimental_rerun()
     
@@ -202,13 +202,13 @@ elif choice == "User Dashboard":
         # Confirm or cancel buttons
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("🔙 Go Back"):
+            if st.button("🔙 Go Back", key="go_back_button"):
                 st.session_state.show_cancel_confirmation = False
                 st.session_state.booking_to_cancel = None
                 st.experimental_rerun()
                 
         with col2:
-            if st.button("✅ Confirm Cancellation"):
+            if st.button("✅ Confirm Cancellation", key="confirm_cancel_button"):
                 try:
                     # Delete booking from Supabase
                     booking_id = booking.get('id')
@@ -245,11 +245,6 @@ elif choice == "User Dashboard":
                 
                 except Exception as e:
                     st.error(f"⚠️ Error: {str(e)}")
-    else:
-        st.info("📭 You have no active bookings.")
-        if st.button("🔍 Browse Available Trips"):
-            st.session_state.menu_choice = "Trip Scheduling & Booking"
-            st.experimental_rerun()
         
     # AI Travel Tips Section with improved styling
     st.markdown("---")
