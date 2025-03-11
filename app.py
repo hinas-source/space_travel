@@ -88,11 +88,10 @@ elif choice == "User Dashboard":
     st.write(f"**Logged in as:** {current_user}")
 
     # Fetch and display bookings
-    #user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
-    user_bookings = supabase.table("bookings").select("*").execute()
-    st.write(user_bookings)
+    user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
-    if user_bookings.data:
+    if user_bookings.status_code == 200:
+        st.write(f"Fetched {len(user_bookings.data)} bookings.")
         for booking in user_bookings.data:
             st.write(f"**Destination:** {booking['destination']}")
             st.write(f"**Class:** {booking['class']}")
