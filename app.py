@@ -2,10 +2,9 @@ import streamlit as st
 import datetime
 from supabase import create_client, Client
 import random
-import os
 
 # Initialize Supabase client
-SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
+SUPABASE_URL = st.secrets["supbase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -100,26 +99,4 @@ if not is_logged_in():
         email = st.text_input("Email", type="email")
         password = st.text_input("Password", type="password")
         if st.button("Login"):
-            if email and password:
-                login_user(email, password)
-            else:
-                st.error("Please enter both email and password.")
-
-    elif menu == "Sign Up":
-        email = st.text_input("Email", type="email")
-        password = st.text_input("Password", type="password")
-        if st.button("Sign Up"):
-            if email and password:
-                signup_user(email, password)
-            else:
-                st.error("Please enter both email and password.")
-else:
-    # Once logged in, show either the booking form or the user dashboard
-    menu = st.sidebar.selectbox("Select Menu", ["Trip Scheduling & Booking", "User Dashboard"])
-    
-    if menu == "Trip Scheduling & Booking":
-        booking_form()
-
-    elif menu == "User Dashboard":
-        user_dashboard()
-
+            if email
