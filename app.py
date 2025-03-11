@@ -157,12 +157,12 @@ elif choice == "User Dashboard":
                         if st.button(f"❌ Cancel", key=f"cancel_{booking.get('id', i)}"):
                             st.session_state.show_cancel_confirmation = True
                             st.session_state.booking_to_cancel = booking
-                            st.experimental_rerun()
+                            st.rerun()
     else:
         st.info("📭 You have no active bookings.")
         if st.button("🔍 Browse Available Trips", key="browse_trips_button"):
             st.session_state.menu_choice = "Trip Scheduling & Booking"
-            st.experimental_rerun()
+            st.rerun()
     
     # Cancel confirmation dialog
     if st.session_state.show_cancel_confirmation and st.session_state.booking_to_cancel:
@@ -205,7 +205,7 @@ elif choice == "User Dashboard":
             if st.button("🔙 Go Back", key="go_back_button"):
                 st.session_state.show_cancel_confirmation = False
                 st.session_state.booking_to_cancel = None
-                st.experimental_rerun()
+                st.rerun()
                 
         with col2:
             if st.button("✅ Confirm Cancellation", key="confirm_cancel_button"):
@@ -239,7 +239,7 @@ elif choice == "User Dashboard":
                             
                         st.success("✅ Your booking has been successfully cancelled. Any applicable refund will be processed within 5-7 business days.")
                         time.sleep(2)  # Give user time to read the message
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.error("⚠️ There was an error cancelling your booking. Please try again or contact customer support.")
                 
