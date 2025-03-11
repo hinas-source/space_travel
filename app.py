@@ -86,7 +86,7 @@ elif choice == "Accommodation Recommendations":
 
 elif choice == "User Dashboard":
     # Display user dashboard with bookings and countdown
-    st.header("User Dashboard")
+    st.header("👤 User Dashboard")
     current_user = "user@example.com"  # Mocked for demo purposes
     st.write(f"**Logged in as:** {current_user}")
 
@@ -94,20 +94,94 @@ elif choice == "User Dashboard":
     user_bookings = supabase.table("bookings").select("*").eq("user_email", current_user).execute()
 
     if user_bookings.data:
-        for booking in user_bookings.data:
-            st.write(f"**Destination:** {booking['destination']}")
-            st.write(f"**Class:** {booking['class']}")
-            st.write(f"**Price:** ${booking['price']:,}")
-            st.write(f"**Departure Date:** {booking['date']}")
-            # Countdown timer to launch
-            launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
-            days_until_launch = (launch_date - datetime.datetime.now()).days
-            st.write(f"**Launch Countdown:** {days_until_launch} days left")
-
-    else:
-        st.write("You have no active bookings.")
+        st.subheader("🎟️ Your Bookings")
         
-    # AI Travel Tips Section
-    st.subheader("AI Travel Tips")
-    st.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
+        # Create columns for the bookings grid
+        col1, col2 = st.columns(2)
+        
+        # Display bookings in a grid of cards
+        for i, booking in enumerate(user_bookings.data):
+            # Alternate between columns
+            current_col = col1 if i % 2 == 0 else col2
+            
+            with current_col:
+                with st.container():
+                    st.markdown("---")
+                    # Calculate countdown
+                    launch_date = datetime.datetime.strptime(booking['date'], "%Y-%m-%d")
+                    days_until_launch = (launch_date - datetime.datetime.now()).days
+                    
+                    # Show countdown with appropriate styling
+                    if days_until_launch < 0:
+                        countdown_color = "red"
+                        countdown_text = f"**LAUNCHED** ({abs(days_until_launch)} days ago)"
+                    elif days_until_launch == 0:
+                        countdown_color = "orange"
+                        countdown_text = "**LAUNCHING TODAY!**"
+                    elif days_until_launch <= 7:
+                        countdown_color = "orange"
+                        countdown_text = f"**LAUNCHING SOON:** {days_until_launch} days left"
+                    else:
+                        countdown_color = "green"
+                        countdown_text = f"**Launch Countdown:** {days_until_launch} days left"
+                    
+                    # Create a card-like appearance
+                    st.markdown(f"### 🚀 Trip to {booking['destination']}")
+                    
+                    # Create two columns within the card for better layout
+                    detail_col1, detail_col2 = st.columns(2)
+                    
+                    with detail_col1:
+                        st.write(f"**Class:** {booking['class'].capitalize()}")
+                        st.write(f"**Price:** ${booking['price']:,}")
+                    
+                    with detail_col2:
+                        st.write(f"**Departure:** {booking['date']}")
+                        st.markdown(f":<span style='color:{countdown_color}'>{countdown_text}</span>", unsafe_allow_html=True)
+                    
+                    # Add action buttons
+                    button_col1, button_col2 = st.columns(2)
+                    with button_col1:
+                        if st.button(f"✏️ Edit", key=f"edit_{i}"):
+                            st.session_state.edit_booking_id = booking.get('id')
+                            st.info("Edit functionality would go here")
+                    
+                    with button_col2:
+                        if st.button(f"❌ Cancel", key=f"cancel_{i}"):
+                            st.session_state.cancel_booking_id = booking.get('id')
+                            st.error("Cancel functionality would go here")
+    else:
+        st.info("📭 You have no active bookings.")
+        if st.button("🔍 Browse Available Trips"):
+            st.session_state.menu_choice = "Trip Scheduling & Booking"
+            st.experimental_rerun()
+        
+    # AI Travel Tips Section with improved styling
+    st.markdown("---")
+    st.subheader("🤖 AI Travel Tips")
+    
+    # Random tip selection for more variety
+    tips = [
+        "To prepare for zero-gravity, practice floating in water! 💧",
+        "Pack light! Every gram counts when traveling to space. 🧳",
+        "Space sickness is common - consider anti-nausea medication for your journey. 💊",
+        "Stay hydrated! Water is precious in space travel. 🚰",
+        "Bring a camera with extra memory cards - the views are unforgettable! 📸"
+    ]
+    
+    st.info(random.choice(tips))
+    
+    # Add upcoming events or promotions
+    st.markdown("### 🌠 Upcoming Events")
+    events_col1, events_col2 = st.columns(2)
+    
+    with events_col1:
+        st.write("**Mars Colony Grand Opening**")
+        st.write("April 15, 2025")
+        st.write("Special inaugural rates available!")
+    
+    with events_col2:
+        st.write("**Solar Eclipse Viewing from Space**")
+        st.write("May 22, 2025")
+        st.write("Limited seats available!")
 
