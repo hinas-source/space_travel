@@ -8,8 +8,8 @@ from supabase import create_client, Client
 # Supabase Configuration
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-print("SUPABASE_URL:", os.getenv("SUPABASE_URL"))  # Debugging
-print("SUPABASE_KEY:", os.getenv("SUPABASE_KEY"))  # Debugging
+st.write("SUPABASE_URL:", os.getenv("SUPABASE_URL"))  # Debugging
+st.write("SUPABASE_KEY:", os.getenv("SUPABASE_KEY"))  # Debugging
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Space destinations & pricing
