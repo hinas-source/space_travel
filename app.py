@@ -160,9 +160,6 @@ elif choice == "User Dashboard":
                             st.rerun()
     else:
         st.info("📭 You have no active bookings.")
-        if st.button("🔍 Browse Available Trips", key="browse_trips_button"):
-            st.session_state.menu_choice = "Trip Scheduling & Booking"
-            st.rerun()
     
     # Cancel confirmation dialog
     if st.session_state.show_cancel_confirmation and st.session_state.booking_to_cancel:
