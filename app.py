@@ -73,20 +73,20 @@ def booking_form():
 
 # User Dashboard
 def user_dashboard():
-    st.sidebar.header(f"Welcome, {st.session_state.user.email}")
-    st.sidebar.button("Logout", on_click=logout_user)
+    st.header(f"Welcome, {st.session_state.user.email}")
+    st.button("Logout", on_click=logout_user)
 
     # Fetch user bookings from Supabase
     user_bookings = supabase.table("bookings").select("*").eq("user_email", st.session_state.user.email).execute()
 
     if user_bookings.data:
         for booking in user_bookings.data:
-            st.sidebar.write(f"**Destination:** {booking['destination']}")
-            st.sidebar.write(f"**Class:** {booking['class']}")
-            st.sidebar.write(f"**Price:** ${booking['price']:,}")
-            st.sidebar.write(f"**Departure Date:** {booking['date']}")
+            st.write(f"**Destination:** {booking['destination']}")
+            st.write(f"**Class:** {booking['class']}")
+            st.write(f"**Price:** ${booking['price']:,}")
+            st.write(f"**Departure Date:** {booking['date']}")
     else:
-        st.sidebar.write("You have no active bookings.")
+        st.write("You have no active bookings.")
 
 # Main page layout
 st.title("🚀 Dubai to the Stars – Book Your Space Travel")
