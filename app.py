@@ -83,7 +83,7 @@ elif choice == "Accommodation Recommendations":
 
 elif choice == "User Dashboard":
     # Display user dashboard with bookings and countdown
-    st.sidebar.header("User Dashboard")
+    st.header("User Dashboard")
     current_user = "user@example.com"  # Mocked for demo purposes
     st.write(f"**Logged in as:** {current_user}")
 
@@ -108,8 +108,3 @@ elif choice == "User Dashboard":
     st.subheader("AI Travel Tips")
     st.write("🚀 Tip: To prepare for zero-gravity, practice floating in water! 💧")
 
-
-# Dashboard with Countdown
-st.sidebar.subheader("🚀 Upcoming Launch")
-countdown_days = launch_countdown(departure_date)
-st.sidebar.write(f"**{countdown_days} days until launch!**")
